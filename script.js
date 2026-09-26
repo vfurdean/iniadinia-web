@@ -74,6 +74,9 @@
   // ---------- music (gapless loop via Web Audio) ----------
 
   const soundBtn = document.querySelector('.sound');
+  // iOS treats Web Audio as "ambient" by default, which the silent switch mutes.
+  // Declaring it as music playback makes it play like a normal song (Safari 16.4+).
+  if (navigator.audioSession) navigator.audioSession.type = 'playback';
   const AudioCtx = window.AudioContext || window.webkitAudioContext;
   const audio = new AudioCtx();
   const master = audio.createGain();
@@ -128,6 +131,14 @@
     });
   }
   unlockEvents.forEach(ev => addEventListener(ev, unlock));
+
+  // iOS suspends/interrupts audio when the tab is backgrounded or the phone locks.
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden || !started || audio.state === 'running') return;
+    audio.resume().catch(() => {});
+    // If it won't resume without a gesture, the next tap brings it back.
+    unlockEvents.forEach(ev => addEventListener(ev, unlock));
+  });
 
   soundBtn.addEventListener('click', () => {
     // The same tap that unlocked audio already turned the sound on.
