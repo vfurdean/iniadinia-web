@@ -135,6 +135,26 @@ body {
   100% { transform: none; }
 }
 
+/* ---------- sound toggle ---------- */
+
+.sound {
+  position: fixed;
+  z-index: 6;
+  right: 16px;
+  bottom: max(16px, env(safe-area-inset-bottom));
+  background: none;
+  border: 0;
+  color: rgba(232, 230, 225, .28);
+  font: 300 .7rem/1 "IBM Plex Mono", monospace;
+  letter-spacing: .3em;
+  padding: 10px 4px;
+  cursor: pointer;
+  transition: color .3s;
+}
+.sound:hover,
+.sound:focus-visible { color: rgba(232, 230, 225, .8); outline: none; }
+.sound[aria-pressed="true"] { color: rgba(232, 230, 225, .55); }
+
 /* ---------- accessibility ---------- */
 
 @media (prefers-reduced-motion: reduce) {
